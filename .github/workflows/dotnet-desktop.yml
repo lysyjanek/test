@@ -10,27 +10,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-dotnet-app:
+ build:
 
-    runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: TestApl
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-    
+    - uses: actions/checkout@v3
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v2
       with:
-         dotnet-version: ['2.1', '2.2', '3.0', '3.1', '5.0', '6.0', '7.0', '8.0']
-  
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-      
     - name: Build
       run: dotnet build --no-restore
-      
-   # - name: Test
-    #  run: dotnet test --no-build --verbosity normal
+   
