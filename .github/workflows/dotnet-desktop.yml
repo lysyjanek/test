@@ -1,9 +1,5 @@
 name: Upload dotnet package
 
-on:
- debug:
-    types: [created]
-    
 
 jobs:
   deploy:
