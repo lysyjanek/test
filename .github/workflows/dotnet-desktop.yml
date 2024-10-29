@@ -1,38 +1,36 @@
-name: TestApl Build
+name: 030-dotnet-workflow
 
 on:
   push:
-    branches: master
+    branches: none # [ main ]
+  pull_request:
+    branches: none # [ main ]
+    
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: windows-latest
+  build-dotnet-app:
+
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: TestApl
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
-
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.2
-      
-    - name: Navigate to Workspace
-      run: cd $GITHUB_WORKSPACE
-
-    - name: Create Build Directory
-      run: mkdir _build
-      
-    - name: Restore Packages
-      run: nuget restore TestApl.sln
-
-    - name: Build Solution
-      run: |
-        msbuild.exe TestApl.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Debug" /p:PublishUrl="../_build"
-        
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        name: EZRepBundle
-        path: "./_build"        
-        
+        dotnet-version: 8.0.x
+  
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore
+      
+   # - name: Test
+    #  run: dotnet test --no-build --verbosity normal
