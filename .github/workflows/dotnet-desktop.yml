@@ -1,8 +1,13 @@
 name: Upload dotnet package
 
 on:
-  release:
-    types: [created]
+ # release:
+   # types: [created]
+    
+      push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -18,8 +23,8 @@ jobs:
           source-url: https://nuget.pkg.github.com/lysyjanek/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - run: dotnet build --configuration Release TestApl
+      - run: dotnet build --configuration Debug TestApl
       - name: Create the package
-        run: dotnet pack --configuration Release TestApl
+        run: dotnet pack --configuration Debug TestApl
       - name: Publish the package to GPR
-        run: dotnet nuget push TestApl/bin/Release/*.nupkg
+        run: dotnet nuget push TestApl/bin/Debug/*.nupkg
